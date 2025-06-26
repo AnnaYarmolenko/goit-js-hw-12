@@ -1,18 +1,18 @@
-.hidden {
-  display: none !important; 
-}
-
 .loader {
   width: 64px;
   height: 64px;
+  display: none;
   position: relative;
-  display: block;
   color: black;
   font-size: 20px;
   margin-top: 10px;
   margin-bottom: 30px;
   margin-right: auto;
   margin-left: auto;
+}
+
+.loader-visible {
+  display: block;
 }
 
 .loader:before,

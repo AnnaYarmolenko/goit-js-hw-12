@@ -3,6 +3,9 @@ import SimpleLightbox from 'simplelightbox';
 // Додатковий імпорт стилів
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
+const gallery = document.querySelector('.gallery');
+const loader = document.querySelector('.loader');
+const loadMoreBtn = document.querySelector('.button-load-more');
 let lightbox;
 
 export function createGallery(images) {
@@ -22,7 +25,6 @@ export function createGallery(images) {
     })
     .join('');
 
-  const gallery = document.querySelector('.gallery');
   gallery.insertAdjacentHTML('beforeend', markup);
 
   if (!lightbox) {
@@ -33,4 +35,24 @@ export function createGallery(images) {
     });
   }
   lightbox.refresh();
+}
+
+export function clearGallery() {
+  gallery.innerHTML = '';
+}
+
+export function showLoader() {
+  loader.classList.add('loader-visible');
+}
+
+export function hideLoader() {
+  loader.classList.remove('loader-visible');
+}
+
+export function showLoadMoreButton() {
+  loadMoreBtn.classList.add('load-more-visible');
+}
+
+export function hideLoadMoreButton() {
+  loadMoreBtn.classList.remove('load-more-visible');
 }

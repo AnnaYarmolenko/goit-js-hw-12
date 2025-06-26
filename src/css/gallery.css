@@ -56,10 +56,6 @@
   line-height: 2;
 }
 
-.load-more-hidden {
-  display: none;
-}
-
 .button-load-more {
   width: 125px;
   height: 40px;
@@ -69,9 +65,14 @@
   border: none;
   cursor: pointer;
   margin: 0px auto 44px auto;
+  display: none;
 }
 
-.load-more{
+.load-more-visible {
+  display: block;
+}
+
+.load-more {
   display: flex;
   justify-content: center;
   align-items: center;

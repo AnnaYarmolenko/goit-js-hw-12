@@ -5,7 +5,7 @@ const baseUrl = 'https://pixabay.com/api/';
 
 export async function getImagesByQuery(query, page = 1) {
   try {
-    const respons = await axios.get(baseUrl, {
+    const response = await axios.get(baseUrl, {
       params: {
         key: apiKey,
         q: query,
@@ -16,7 +16,7 @@ export async function getImagesByQuery(query, page = 1) {
         per_page: 15,
       },
     });
-    return respons.data;
+    return response.data;
   } catch (err) {
     console.error(err);
     throw err;

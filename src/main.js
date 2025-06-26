@@ -2,32 +2,22 @@ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
 import { getImagesByQuery } from './js/pixabay-api';
-import { createGallery } from './js/render-functions';
+import {
+  createGallery,
+  clearGallery,
+  showLoader,
+  hideLoader,
+  showLoadMoreButton,
+  hideLoadMoreButton,
+} from './js/render-functions';
 
 const form = document.querySelector('.form');
 const searchInput = document.querySelector('input[name="search-text"]');
-const loader = document.querySelector('.loader');
-const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.button-load-more');
 let userInput = '';
 let page = 1;
 let totalLoaded = 0;
 let totalHits = 0;
-
-function waitForImagesToLoad(container) {
-  const images = container.querySelectorAll('img');
-  const promises = Array.from(images).map(img => {
-    return new Promise(resolve => {
-      if (img.complete) {
-        resolve();
-      } else {
-        img.addEventListener('load', resolve);
-        img.addEventListener('error', resolve);
-      }
-    });
-  });
-  return Promise.all(promises);
-}
 
 form.addEventListener('submit', async event => {
   event.preventDefault();
@@ -42,11 +32,11 @@ form.addEventListener('submit', async event => {
     return;
   }
 
-  gallery.innerHTML = '';
+  clearGallery();
   page = 1;
 
-  loader.classList.remove('hidden');
-  loadMoreBtn.classList.replace('load-more', 'load-more-hidden');
+  showLoader();
+  hideLoadMoreButton();
 
   try {
     const data = await getImagesByQuery(userInput, page);
@@ -63,9 +53,9 @@ form.addEventListener('submit', async event => {
         backgroundColor: '#ef4040',
         messageColor: '#fafafb',
       });
-      gallery.innerHTML = '';
-      loader.classList.add('hidden');
-      loadMoreBtn.classList.replace('load-more', 'load-more-hidden');
+      clearGallery();
+      hideLoader();
+      hideLoadMoreButton();
       form.reset();
       return;
     }
@@ -75,18 +65,17 @@ form.addEventListener('submit', async event => {
 
     createGallery(data.hits);
 
-    await waitForImagesToLoad(gallery);
-    loader.classList.add('hidden');
+    hideLoader();
 
     if (totalLoaded < totalHits) {
-      loadMoreBtn.classList.replace('load-more-hidden', 'load-more');
+      showLoadMoreButton();
     }
   } catch (err) {
     iziToast.error({
       message: 'Something went wrong. Please try again later.',
       position: 'topCenter',
     });
-    loader.classList.add('hidden');
+    hideLoader();
   }
 
   form.reset();
@@ -96,25 +85,21 @@ loadMoreBtn.addEventListener('click', handleClick);
 
 async function handleClick() {
   page += 1;
-  loadMoreBtn.classList.replace('load-more', 'load-more-hidden');
-  loader.classList.remove('hidden');
+  hideLoadMoreButton();
+  showLoader();
 
   try {
-    waitForImagesToLoad(gallery);
     const data = await getImagesByQuery(userInput, page);
 
     createGallery(data.hits);
 
-    await waitForImagesToLoad(gallery);
-    loader.classList.add('hidden');
+    hideLoader();
     totalLoaded += data.hits.length;
 
-    loadMoreBtn.classList.replace('load-more-hidden', 'load-more');
-
     if (totalLoaded < totalHits) {
-      loadMoreBtn.classList.replace('load-more-hidden', 'load-more');
+      showLoadMoreButton();
     } else {
-      loadMoreBtn.classList.replace('load-more', 'load-more-hidden');
+      hideLoadMoreButton();
       iziToast.error({
         message: "We're sorry, but you've reached the end of search results.",
         position: 'topRight',
